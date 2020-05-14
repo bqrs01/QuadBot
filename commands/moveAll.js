@@ -37,7 +37,12 @@ exports.run = async (client, message, args, level) => {
             }
         })
 
-        client.sendDisappearingMessage(`<@${message.member.id}>, moved ${membersMoved} users into ${rawChannel}!`, message.channel, 4)
+        await delay(500)
+        if (rawChannel == 'null') {
+            client.sendDisappearingMessage(`<@${message.member.id}>, disconnected ${membersMoved} users!`, message.channel, 4)
+        } else {
+            client.sendDisappearingMessage(`<@${message.member.id}>, moved ${membersMoved} users into ${rawChannel}!`, message.channel, 4)
+        }
     } else {
         client.sendDisappearingMessage(`<@${message.member.id}>, channel ${rawChannel} doesn't exist!`, message.channel, 4)
     }
