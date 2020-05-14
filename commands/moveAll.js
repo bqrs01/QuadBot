@@ -19,6 +19,7 @@ exports.run = async (client, message, args, level) => {
         if (rawChannel == 'null') voiceChannel = null;
         await guild.members.fetch()
         let a = -1
+        let membersMoved = 0
         const members = guild.members.cache.filter(us => (us.presence.status != "offline" && !us.user.bot))
         members.forEach(async member => {
             if (member instanceof GuildMember) {
@@ -31,9 +32,12 @@ exports.run = async (client, message, args, level) => {
                         console.log('noyolo', error)
                         return false;
                     })
+                    membersMoved++
                 }
             }
         })
+
+        client.sendDisappearingMessage(`<@${message.member.id}>, moved ${membersMoved} users into ${rawChannel}!`, message.channel, 4)
     } else {
         client.sendDisappearingMessage(`<@${message.member.id}>, channel ${rawChannel} doesn't exist!`, message.channel, 4)
     }
