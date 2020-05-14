@@ -88,11 +88,11 @@ client.on('messageReactionAdd', async (messageReaction, user) => {
             // project-discussion voice channel
             voiceChannelRegistrations[user.id] = 1
             // selectVoiceChannel.send(`@${user.tag} Please join the 'join-voice' channel now!`)
-            disappearingMessage(`<@${user.id}>, you have selected to join project-discussion. Please join **#join-voice**!`, messageReaction.message.channel, 6.5)
+            disappearingMessage(`<@${user.id}>, you have selected to join project-discussion. Please join **<#710245966342783099>**!`, messageReaction.message.channel, 6.5)
         } else if (messageReaction.emoji.name == '2️⃣') {
             // catia-crew voice channel
             voiceChannelRegistrations[user.id] = 2
-            disappearingMessage(`<@${user.id}>, you have selected to join catia-crew. Please join **#join-voice**!`, messageReaction.message.channel, 6.5)
+            disappearingMessage(`<@${user.id}>, you have selected to join catia-crew. Please join **<#710245966342783099>**!`, messageReaction.message.channel, 6.5)
         }
         messageReaction.users.remove(user.id)
     }
@@ -123,4 +123,4 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
     }
 })
 
-client.login(secrets.discordToken)
+client.login(secrets.token)
