@@ -7,6 +7,12 @@ module.exports = async (client, message) => {
     // If there is no guild, get default conf (DMs)
     const settings = message.settings = client.getSettings(message.guild);
 
+    let inBotSC = false;
+
+    if (message.channel.name == "quadbot") {
+        inBotSC = true;
+    }
+
     // Checks if the bot was mentioned, with no message after it, returns the prefix.
     const prefixMention = new RegExp(`^<@!?${client.user.id}>( |)$`);
     if (message.content.match(prefixMention)) {
@@ -15,7 +21,13 @@ module.exports = async (client, message) => {
 
     // Also good practice to ignore any message that does not start with our prefix,
     // which is set in the configuration file.
-    if (message.content.indexOf(settings.prefix) !== 0) return;
+    if (message.content.indexOf(settings.prefix) !== 0) {
+        if (inBotSC) {
+            client.sendDisappearingMessage(`${message.member}, This channel is only for \`quadbot\` commands!`, message.channel, 6)
+            message.delete()
+        }
+        return
+    }
 
     // Delete message to reduce spam
     message.delete()

@@ -10,7 +10,11 @@ exports.run = async (client, message, args, level) => {
     const voiceChannel = await guild.channels.cache.find(ch => ch.name == rawChannel)
 
     if (voiceChannel) {
-        voiceState.setChannel(voiceChannel)
+        if (voiceState.channel && user.presence.status !== "offline") {
+            voiceState.setChannel(voiceChannel)
+        } else {
+            client.sendDisappearingMessage(`${message.member}, user ${user} is not online!`, message.channel, 4)
+        }
     } else {
         client.sendDisappearingMessage(`<@${message.member.id}>, channel ${rawChannel} doesn't exist!`, message.channel, 4)
     }

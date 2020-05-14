@@ -37,7 +37,7 @@ exports.run = async (client, message, args, level) => {
             }
         })
 
-        await delay(500)
+        await delay(1000)
         if (rawChannel == 'null') {
             client.sendDisappearingMessage(`<@${message.member.id}>, disconnected ${membersMoved} users!`, message.channel, 4)
         } else {
