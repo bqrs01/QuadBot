@@ -41,6 +41,14 @@ const mainMessageEmbed = new Discord.MessageEmbed()
 	.setTimestamp()
 
 
+const disappearingMessage = async (message, channel, time) => {
+    const messageO = await channel.send(message)
+    //console.log(messageO)
+    setTimeout(async ()=>{
+        messageO.delete()
+    }, time*1000)
+}
+
 client.on('ready', async () => {
     console.log('Connected as ' + client.user.tag)
 
@@ -80,9 +88,11 @@ client.on('messageReactionAdd', async (messageReaction, user) => {
             // project-discussion voice channel
             voiceChannelRegistrations[user.id] = 1
             // selectVoiceChannel.send(`@${user.tag} Please join the 'join-voice' channel now!`)
+            disappearingMessage(`<@${user.id}>, you have selected to join project-discussion. Please join **#join-voice**!`, messageReaction.message.channel, 6.5)
         } else if (messageReaction.emoji.name == '2️⃣') {
             // catia-crew voice channel
             voiceChannelRegistrations[user.id] = 2
+            disappearingMessage(`<@${user.id}>, you have selected to join catia-crew. Please join **#join-voice**!`, messageReaction.message.channel, 6.5)
         }
         messageReaction.users.remove(user.id)
     }
