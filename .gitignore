@@ -105,3 +105,4 @@ dist
 
 # Secrets file
 secrets.json
+.DS_Store
