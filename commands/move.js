@@ -1,5 +1,6 @@
 exports.run = async (client, message, args, level) => {
     const rawChannel = args.slice(-1).pop()
+    if (!rawChannel) return client.sendDisappearingMessage(`${message.member}, no arguments given!`, message.channel, 4)
     const members = message.mentions.members
 
     const guild = message.channel.guild

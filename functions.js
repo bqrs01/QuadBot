@@ -1,3 +1,8 @@
+const {
+    promisify
+} = require("util");
+const readdir = promisify(require("fs").readdir);
+
 module.exports = (client) => {
     // Enmap settings
     const defaultSettings = {
@@ -44,9 +49,40 @@ module.exports = (client) => {
         });
     };
 
+    client.loadModule = async (moduleName) => {
+        try {
+            const module = require(`./modules/${moduleName}/`)
+            if (!module.props.enabled) return false;
+            client.logger.log(`Loading module: ${moduleName}`);
+            module.initData = null;
+            if (module.init) {
+                const init = module.init(client);
+                if (init) module.initData = init;
+            }
+            client.modules.set(module.props.name, module)
+
+            // Load module events as well
+            const moduleEvents = await readdir(`./modules/${moduleName}/events/`);
+            client.logger.log(`Loading a total of ${moduleEvents.length} events found in module ${moduleName}.`);
+            moduleEvents.forEach(file => {
+                const eventName = file.split(".")[0];
+                //client.logger.log(`Loading Event: ${eventName}`);
+                const event = require(`./modules/${moduleName}/events/${file}`);
+                // Bind the client to any event, before the existing arguments
+                // provided by the discord.js event. 
+                // This line is awesome by the way. Just sayin'.
+                client.on(eventName, event.bind(null, client, module.initData));
+            });
+
+            return false;
+        } catch (e) {
+            return `Unable to load module ${moduleName}: ${e}`;
+        }
+    }
+
     client.loadCommand = (commandName) => {
         try {
-            client.logger.log(`Loading Command: ${commandName}`);
+            client.logger.log(`Loading command: ${commandName}`);
             const props = require(`./commands/${commandName}`);
             if (props.init) {
                 props.init(client);

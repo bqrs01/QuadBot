@@ -1,6 +1,5 @@
 module.exports = async (client, _, newState) => {
     //console.log(newState)
-
     // Get voice channel from member's newState
     if (newState.channelID && newState.channelID == "710245966342783099") {
         if (newState.member.user.bot) {

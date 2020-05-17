@@ -35,8 +35,8 @@ module.exports = async client => {
     const server = await client.guilds.cache.get("688031444664188943")
 
     // Get channel refs
-    const selectVoiceChannel = client.channels.cache.get("710245938869829654")
-    const joinVoiceChannel = client.channels.cache.get("710245966342783099")
+    const selectVoiceChannel = await client.channels.cache.get("710245938869829654")
+    const joinVoiceChannel = await client.channels.cache.get("710245966342783099")
 
     // Delete previous message, if any
     const oldMessages = await selectVoiceChannel.messages.fetch()
