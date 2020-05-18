@@ -26,15 +26,15 @@ const generateMessageCard = (voiceServers) => {
         value: 'First select the voice channel by reacting with the options below. Once you\'ve reacted, join the voice channel.'
     }, {
         name: 'Command',
-        value: 'If you\'re feeling lucky!, you can also run \`!join <choice>\` where choice is the server number. e.g. \`!join 1\`'
+        value: 'If you like using commands, you can also run \`!join <choice>\` where choice is the server number. e.g. \`!join 1\`'
     }] //, {
     //name: '\u200B',
     //value: '\u200B'
     //}]
     for (let i = 0; i < voiceServers.length; i++) {
         contentFields.push({
-            name: voiceServers[i].name,
-            value: `React with ${reactEmojis[i+1]}`
+            name: `Server ${i+1}`,
+            value: `**${voiceServers[i].name}** - react with ${reactEmojis[i+1]} or run \`join ${i+1}\``
         })
     }
 
