@@ -88,11 +88,8 @@ const reload = async (client, moduleData, voiceRegistrations, guildId) => {
     // Get previous messageId
     const prevMessageId = await moduleData.getProp('setups', `${guildId}.messageId`)
     const prevMessage = await textChannel.messages.cache.get(prevMessageId)
-
-    // Delete previous main message
-    await prevMessage.delete()
-
-    //await deleteMessagesFromChannel(textChannel)
+    if (prevMessage) await prevMessage.delete();
+    // Delete previous main message --UP--
 
     // Delete previous messageId
     await moduleData.deleteProp('setups', `${guildId}.messageId`)
