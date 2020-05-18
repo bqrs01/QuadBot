@@ -19,10 +19,20 @@ module.exports = async (client, _, messageReaction, user) => {
         const index = getKeyByValue(helpers.reactEmojis, emojiUsed)
 
         indexFunc.voiceRegistrations.set(key, `${(index - 1)}`, user.id)
+        const guild = await client.guilds.cache.get(key)
+        const member = await guild.members.fetch(user.id)
 
-        client.sendDisappearingMessage(`${user}, your selection was received. Please join voice now!`, messageReaction.message.channel, 6)
+        const voiceState = member.voice;
 
         messageReaction.users.remove(user.id)
+
+        if (voiceState.channelID && voiceState.channelID == setups[key].joinVoiceChannelId) {
+            const voiceChannel = await client.channels.fetch(setups[key].joinVoiceChannelId)
+            voiceState.setChannel(voiceChannel)
+            return client.sendDisappearingMessage(`${user}, successfully joined you to ${setups[key].voiceChannels[index-1].name}!`, messageReaction.message.channel, 6)
+        } else {
+            return client.sendDisappearingMessage(`${user}, your selection was received. Please join voice now!`, messageReaction.message.channel, 6)
+        }
     }
 
     /*

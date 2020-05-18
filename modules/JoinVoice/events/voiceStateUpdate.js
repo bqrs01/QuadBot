@@ -17,18 +17,20 @@ module.exports = async (client, _, _2, newState) => {
         const userId = newState.id
         const textChannel = await client.channels.fetch(setups[key].textChannelId)
 
-        // Check if they have selected a channel already.
-        const index = indexFunc.voiceRegistrations.get(key, userId)
+        // Check if they have selected a channel already.)
+        const exists = indexFunc.voiceRegistrations.has(key, newState.id)
 
-        if (typeof index !== 'string') {
+        if (!exists) {
             // They have not selected a channel
-            newState.setChannel(null)
-            return client.sendDisappearingMessage(`<@${newState.id}>, you first need to select a server before joining voice`,
-                textChannel, 6)
-
+            // newState.setChannel(null)
+            return client.sendDisappearingMessage(`<@${newState.id}>, you either need to run a command or select a server now!`, textChannel, 6)
+            return false;
         }
+
+        const index = parseInt(indexFunc.voiceRegistrations.getProp(key, newState.id))
+
         const voiceChannels = setups[key].voiceChannels
-        const voiceChannel = await client.channels.fetch(voiceChannels[parseInt(index, 10)].channelId)
+        const voiceChannel = await client.channels.fetch(voiceChannels[index].channelId)
         indexFunc.voiceRegistrations.delete(key, userId)
         newState.setChannel(voiceChannel)
 

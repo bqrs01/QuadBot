@@ -1,5 +1,6 @@
 const {
     moduleData,
+    voiceRegistrations
 } = require('../')
 const {
     initMessage,
@@ -11,6 +12,9 @@ module.exports = async (client, _) => {
     for (var key in setups) {
         // skip loop if the property is from prototype
         if (!setups.hasOwnProperty(key)) continue;
+
+        // Ensure voice registrations exist
+        voiceRegistrations.ensure(key, {})
 
         setup = setups[key]
         textChannel = await client.channels.fetch(setup.textChannelId)

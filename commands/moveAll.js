@@ -28,12 +28,12 @@ exports.run = async (client, message, args, level) => {
                 if (voiceState.channel) {
                     a++
                     await delay(250 + (a * 200))
+                    membersMoved++
                     await voiceState.setChannel(voiceChannel).catch((error) => {
                         //console.log('Failed to move', member.nickname)
                         console.log('noyolo', error)
                         return false;
                     })
-                    membersMoved++
                 }
             }
         })

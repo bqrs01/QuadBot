@@ -18,7 +18,11 @@ exports.run = async (client, message, args, level) => {
             }
         })
         // If not run at least once
-        if (!ranALOnce) return client.sendDisappearingMessage(`${message.member}, no users were mentioned. Try again!`, message.channel, 4)
+        if (!ranALOnce) {
+            // Move only message member
+            message.member.voice.setChannel(voiceChannel)
+            //return client.sendDisappearingMessage(`${message.member}, no users were mentioned. Try again!`, message.channel, 4)
+        }
     } else {
         client.sendDisappearingMessage(`${message.member}, channel ${rawChannel} doesn't exist!`, message.channel, 4)
     }

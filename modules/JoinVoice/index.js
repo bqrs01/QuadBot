@@ -8,6 +8,13 @@ const {
     reload
 } = require('./helpers');
 
+const delay = (amount = number) => {
+    return new Promise((resolve) => {
+        setTimeout(resolve, amount);
+    });
+}
+
+// !r joinvoice addVoice Main Project Discussion, 688052434463227980
 /*
 setups: [{
     textChannelId: ...,
@@ -53,7 +60,11 @@ exports.run = async (client, message, args, level) => {
                 voiceChannels: []
             }, guildId);
 
-            return replyMessage('setup successful. Add voice channels to route to now!', message, client)
+            replyMessage('setup successful. Add voice channels to route to now!', message, client)
+
+            delay(3000)
+
+            return reload(client, moduleData, voiceRegistrations, guildId)
         case "addVoice":
             // Get text channel from message
             let channel = message.channel
@@ -77,7 +88,37 @@ exports.run = async (client, message, args, level) => {
                 channelId: voiceId
             }, `${guildIdA}.voiceChannels`)
 
-            return replyMessage('successfully added voice channel!', message, client)
+            replyMessage('successfully added voice channel!', message, client)
+
+            delay(3000)
+
+            return reload(client, moduleData, voiceRegistrations, guildIdA)
+            break
+        case "removeVoice":
+            let channelA = message.channel
+            const guildIdE = channelA.guild.id
+            existingSetup = moduleData.get('setups', guildIdE) //.findKey(a => a.textChannelId == channel.id)
+            if (!existingSetup) return replyMessage('please run addSetup first before running removeVoice!', message, client)
+
+            let voiceChannels = moduleData.get('setups', `${guildIdE}.voiceChannels`)
+            const exists = voiceChannels.find(a => a.channelId == arguments[0])
+
+            if (!exists) return replyMessage('voice channel not setup previously!', message, client)
+
+            const index = voiceChannels.findIndex(a => a.channelId == arguments[0])
+
+            voiceChannels.splice((index))
+
+            console.log(voiceChannels)
+
+            moduleData.set('setups', voiceChannels, `${guildIdE}.voiceChannels`)
+
+            replyMessage(`voice channel ${exists.name} removed successfully!`, message, client)
+
+            delay(3000)
+
+            return reload(client, moduleData, voiceRegistrations, guildIdA)
+
             break
         case "debug":
             client.sendDisappearingMessage(`${message.member}, ${JSON.stringify(moduleData.get('setups'))}`, message.channel, 20)
@@ -88,6 +129,10 @@ exports.run = async (client, message, args, level) => {
             existingSetup = moduleData.get('setups', guildIdB)
             if (!existingSetup) return replyMessage('no setup found to test!', message, client)
             message.channel.send(generateMessageCard(existingSetup.voiceChannels))
+            break;
+        case "reload":
+            const guildIdD = message.channel.guild.id
+            reload(client, moduleData, voiceRegistrations, guildIdD)
             break;
         case "reset":
             // Get guild id
