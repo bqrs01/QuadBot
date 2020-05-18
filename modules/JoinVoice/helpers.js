@@ -34,7 +34,7 @@ const generateMessageCard = (voiceServers) => {
     for (let i = 0; i < voiceServers.length; i++) {
         contentFields.push({
             name: `Server ${i+1}`,
-            value: `**${voiceServers[i].name}** - react with ${reactEmojis[i+1]} or run \`join ${i+1}\``
+            value: `**${voiceServers[i].name}** - react with ${reactEmojis[i+1]} or run \`!join ${i+1}\``
         })
     }
 
