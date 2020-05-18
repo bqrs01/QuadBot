@@ -76,7 +76,7 @@ module.exports = (client) => {
 
             return false;
         } catch (e) {
-            return `Unable to load module ${moduleName}: ${e}`;
+            return `Unable to load module ${moduleName}: ${e.stack}`;
         }
     }
 

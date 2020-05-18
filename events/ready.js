@@ -7,7 +7,7 @@ module.exports = async client => {
         .setColor('#0099ff')
         .setTitle('How to join voice?')
         .setAuthor('QuadBot')
-        .addFields({
+        .addFields([{
             name: 'Instructions',
             value: 'First select the voice channel by reacting with the options below (1 or 2). Once you\'ve reacted, join the voice channel.'
         }, {
@@ -21,7 +21,7 @@ module.exports = async client => {
             name: 'CATIA Crew',
             value: 'React with 2.',
             inline: true
-        }, )
+        }])
         .setTimestamp()
 
 
@@ -30,7 +30,7 @@ module.exports = async client => {
     client.user.setActivity('AE1222-I', {
         type: 'WATCHING'
     })
-
+    /*
     // AE Group 10E server ref
     const server = await client.guilds.cache.get("688031444664188943")
 
@@ -48,4 +48,5 @@ module.exports = async client => {
     mainMessage.react('1️⃣')
     mainMessage.react('2️⃣')
     client.mainMessageId = mainMessage.id
+    */
 };

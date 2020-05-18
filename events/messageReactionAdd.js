@@ -1,5 +1,5 @@
 module.exports = async (client, messageReaction, user) => {
-    if (messageReaction.message.id == client.mainMessageId && user.id != "710239236669964380") {
+    /*if (messageReaction.message.id == client.mainMessageId && user.id != "710239236669964380") {
         client.logger.log("We got a reaction from " + user.tag)
         if (messageReaction.emoji.name == '1️⃣') {
             // project-discussion voice channel
@@ -12,5 +12,5 @@ module.exports = async (client, messageReaction, user) => {
             client.sendDisappearingMessage(`<@${user.id}>, you have selected to join catia-crew. Please join **<#710245966342783099>**!`, messageReaction.message.channel, 6.5)
         }
         messageReaction.users.remove(user.id)
-    }
+    }*/
 }
