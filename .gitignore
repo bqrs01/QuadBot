@@ -108,3 +108,6 @@ secrets.json
 .DS_Store
 
 data
+data/enmap.sqlite-shm
+data/enmap.sqlite-wal
+data/enmap.sqlite
