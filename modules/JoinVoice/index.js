@@ -26,8 +26,11 @@ setups: [{
 }]
 */
 
-const replyMessage = (text, message, client) => {
-    client.sendDisappearingMessage(`${message.member}, ${text}`, message.channel, 5)
+const replyMessage = (text, message, client, dis = true) => {
+    if (!dis) return client.sendDisappearingMessage(`${message.member}, ${text}`, message.channel, 60)
+    else {
+        return client.sendDisappearingMessage(`${message.member}, ${text}`, message.channel, 5)
+    }
 }
 
 exports.run = async (client, message, args, level) => {
@@ -52,7 +55,6 @@ exports.run = async (client, message, args, level) => {
             // !r joinvoice addSetup 710245938869829654 710245966342783099
 
             const guildId = textChannel.guild.id;
-            console.log(typeof guildId)
 
             moduleData.set('setups', {
                 textChannelId,
@@ -61,8 +63,6 @@ exports.run = async (client, message, args, level) => {
             }, guildId);
 
             replyMessage('setup successful. Add voice channels to route to now!', message, client)
-
-            delay(3000)
 
             return reload(client, moduleData, voiceRegistrations, guildId)
         case "addVoice":
@@ -109,15 +109,11 @@ exports.run = async (client, message, args, level) => {
 
             voiceChannels.splice((index))
 
-            console.log(voiceChannels)
-
             moduleData.set('setups', voiceChannels, `${guildIdE}.voiceChannels`)
 
             replyMessage(`voice channel ${exists.name} removed successfully!`, message, client)
 
-            delay(3000)
-
-            return reload(client, moduleData, voiceRegistrations, guildIdA)
+            return reload(client, moduleData, voiceRegistrations, guildIdE)
 
             break
         case "debug":

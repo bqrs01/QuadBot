@@ -49,8 +49,13 @@ const generateMessageCard = (voiceServers) => {
 
 const deleteMessagesFromChannel = async (channel) => {
     const oldMessages = await channel.messages.fetch()
-    oldMessages.forEach((message) => {
-        message.delete()
+    oldMessages.forEach(async (message) => {
+        if (message.deleted) return false;
+        try {
+            await message.delete();
+        } catch (e) {
+            client.logger.log('Error: ' + e.stack, "error")
+        }
     })
 
 }
@@ -58,7 +63,11 @@ const deleteMessagesFromChannel = async (channel) => {
 const initMessage = async (channel, voiceServers) => {
     const message = await channel.send(generateMessageCard(voiceServers))
     for (let i = 0; i < voiceServers.length; i++) {
-        await message.react(reactEmojis[i + 1])
+        try {
+            await message.react(reactEmojis[i + 1])
+        } catch (e) {
+            client.logger.log('Error: ' + e.stack, "error")
+        }
     }
     return message.id
 }
@@ -76,11 +85,17 @@ const reload = async (client, moduleData, voiceRegistrations, guildId) => {
     setup = setups[guildId]
     textChannel = await client.channels.fetch(setup.textChannelId)
 
-    // Delete previous messageId
-    moduleData.deleteProp('setups', `${guildId}.messageId`)
+    // Get previous messageId
+    const prevMessageId = await moduleData.getProp('setups', `${guildId}.messageId`)
+    const prevMessage = await textChannel.messages.cache.get(prevMessageId)
 
-    // Delete all previous messages
-    await deleteMessagesFromChannel(textChannel)
+    // Delete previous main message
+    await prevMessage.delete()
+
+    //await deleteMessagesFromChannel(textChannel)
+
+    // Delete previous messageId
+    await moduleData.deleteProp('setups', `${guildId}.messageId`)
 
     // Send message card and add reactions and get id back
     const messageId = await initMessage(textChannel, setup.voiceChannels)
