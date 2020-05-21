@@ -56,7 +56,7 @@ exports.run = async (client, message, args, level) => {
                 return replyMessage(`an error occured: ${e}`, message, client)
             }
 
-            await updateMembersCount(channelA, guild)
+            await updateMemberCount(channelA, guild)
 
             return replyMessage('reload successful.', message, client)
     }
