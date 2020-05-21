@@ -20,7 +20,7 @@ exports.run = async (client, message, args, level) => {
         await guild.members.fetch()
         let a = -1
         let membersMoved = 0
-        const members = guild.members.cache.filter(us => (us.presence.status != "offline" && !us.user.bot))
+        const members = guild.members.cache.filter(us => ((us.presence.status != "offline" || us.voice.channel != null) && !us.user.bot))
         members.forEach(async member => {
             if (member instanceof GuildMember) {
                 const voiceState = member.voice
