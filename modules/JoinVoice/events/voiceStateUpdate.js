@@ -3,7 +3,6 @@ const helpers = require('../helpers')
 
 module.exports = async (client, _, _2, newState) => {
     if (!newState.channelID) return false;
-    if (newState.member.user.bot) return newState.setChannel(null);
     const setups = indexFunc.moduleData.get('setups')
     // Loop through all guilds to check if voice channel is ours
     /*for (var k in setups) {
@@ -13,6 +12,7 @@ module.exports = async (client, _, _2, newState) => {
         // Skip loop if the property is from prototype
         if (!setups.hasOwnProperty(key)) continue;
         if (!(setups[key].joinVoiceChannelId == newState.channelID)) continue;
+        if (newState.member.user.bot) return newState.setChannel(null);
 
         const userId = newState.id
         const textChannel = await client.channels.fetch(setups[key].textChannelId)
