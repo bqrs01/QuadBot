@@ -126,17 +126,32 @@ module.exports = (client) => {
     client.voiceChannelRegistrations = {}
 
     client.permlevel = (message) => {
-        const settings = client.getSettings();
+        const settings = client.getSettings(message.guild);
         const userRole = message.member.roles.highest
         const userRoleName = userRole.name
         const userId = message.member.id
 
         if (userId == settings.superAdminId) return 5;
-        if (userRoleName == settings.adminRole) return 4;
+        if (userRoleName == settings.adminRole || message.member.hasPermission(8)) return 4;
         if (userRoleName == settings.memberRole) return 3;
 
         return 2;
     }
+
+    client.awaitReply = async (msg, question, limit = 60000) => {
+        const filter = m => m.author.id === msg.author.id;
+        await client.sendDisappearingMessage(question, msg.channel, 20);
+        try {
+            const collected = await msg.channel.awaitMessages(filter, {
+                max: 1,
+                time: limit,
+                errors: ["time"]
+            });
+            return collected.first().content;
+        } catch (e) {
+            return false;
+        }
+    };
 
     client.getRoleFromPermLevel = (perm) => {
         switch (perm) {

@@ -47,7 +47,7 @@ module.exports = async (client, _, message) => {
     if (message.guild && !message.member) await message.guild.fetchMember(message.author);
 
     // Get the user or member's permission level from the elevation
-    const level = client.permlevel(message);
+    const level = message.author.permLevel || client.permlevel(message);
 
     switch (command) {
         case 'join':
