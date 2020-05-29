@@ -47,7 +47,7 @@ exports.run = async (client, message, args, level) => {
                 textChannel = await client.channels.fetch(textChannelId)
                 joinVoiceChannel = await client.channels.fetch(joinVoiceChannelId)
             } catch (e) {
-                return replyMessage(`an error occured: ${e}`, message)
+                return replyMessage(`an error occured: ${e}`, message, client)
             }
 
             // Check if guild of both channels is same
@@ -73,12 +73,19 @@ exports.run = async (client, message, args, level) => {
             if (!existingSetup) return replyMessage('please run addSetup first before running addVoice!', message, client)
 
             // Get raw args from message
-            rawArguments = arguments.join(" ")
-            rawArguments = rawArguments.split(", ")
-            voiceName = rawArguments[0]
-            voiceId = rawArguments[1]
+            // rawArguments = arguments.join(" ")
+            //rawArguments = rawArguments.split(", ")
+            //voiceName = rawArguments[0]
+            voiceId = arguments[0]
+            voiceName = arguments.splice(1).join(" ")
 
-            if (!(voiceName && voiceId)) return replyMessage('please try again (bad formatting)!', message, client)
+            try {
+                voiceChannel = await client.channels.fetch(voiceId)
+            } catch (e) {
+                return replyMessage(`an error occured: ${e}`, message, client)
+            }
+
+            if (!(voiceName && voiceId && voiceChannel)) return replyMessage('please try again (bad formatting)!', message, client)
             if (moduleData.get('setups', `${guildIdA}.joinVoiceChannelId`) == voiceId) return replyMessage('you cannot use the join voice channel here!', message, client)
             if (moduleData.get('setups', `${guildIdA}.voiceChannels`).find(b => b.channelId == voiceId)) return replyMessage('this voice channel is already in the list!', message, client)
 
@@ -101,18 +108,22 @@ exports.run = async (client, message, args, level) => {
             if (!existingSetup) return replyMessage('please run addSetup first before running removeVoice!', message, client)
 
             let voiceChannels = moduleData.get('setups', `${guildIdE}.voiceChannels`)
-            const exists = voiceChannels.find(a => a.channelId == arguments[0])
-
-            if (!exists) return replyMessage('voice channel not setup previously!', message, client)
-
-            const index = voiceChannels.findIndex(a => a.channelId == arguments[0])
-
+            let exists1 = voiceChannels.findIndex(a => a.channelId == arguments[0])
+            let exists2 = voiceChannels.findIndex(a => a.name == arguments.join(" "))
+            let index;
+            if (exists1 == -1) {
+                if (exists2 == -1) {
+                    return replyMessage('voice channel not setup previously!', message, client)
+                } else {
+                    index = exists2
+                }
+            } else {
+                index = exists1
+            }
+            const exists = voiceChannels[index]
             voiceChannels.splice((index))
-
             moduleData.set('setups', voiceChannels, `${guildIdE}.voiceChannels`)
-
-            replyMessage(`voice channel ${exists.name} removed successfully!`, message, client)
-
+            replyMessage(`voice channel \`${exists.name}\` removed successfully!`, message, client)
             return reload(client, moduleData, voiceRegistrations, guildIdE)
 
             break
