@@ -27,7 +27,7 @@ module.exports = async client => {
 
     client.logger.log('Connected as ' + client.user.tag, 'ready')
 
-    client.user.setActivity('AE1222-I', {
+    client.user.setActivity('AE Students', {
         type: 'WATCHING'
     })
     /*
