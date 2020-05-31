@@ -27,7 +27,7 @@ module.exports.checkFeedsAndUpdate = async () => {
                 feedUrl = feedData.feedUrl
                 courseName = feedData.courseName
                 //console.log(feedData)
-                let fetchedFeed = await parser.parseURL('https://brightspace.tudelft.nl/d2l/le/news/rss/191905/course?token=asl18nghh9vk3cw678d6');
+                let fetchedFeed = await parser.parseURL(feedUrl);
                 for (let item in fetchedFeed.items) {
                     itemData = fetchedFeed.items[item]
                     if (!guids.includes(itemData.guid)) {
