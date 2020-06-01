@@ -1,23 +1,26 @@
 const Parser = require('rss-parser');
 let parser = new Parser();
-const {WebhookClient, Webhook} = require("discord.js")
-const crypto = require('crypto')
 const {
-    moduleData
-} = require('./index')
+    WebhookClient,
+    Webhook
+} = require("discord.js")
+const crypto = require('crypto')
+// const {
+//     moduleData
+// } = require('./index')
 
 function truncateString(str, num) {
     // If the length of str is less than or equal to num
     // just return str--don't truncate it.
     if (str.length <= num) {
-      return str
+        return str
     }
     // Return str truncated with '...' concatenated to the end of str.
     return str.slice(0, num) + '...'
-  }
-  
+}
 
-module.exports.checkFeedsAndUpdate = async () => {
+
+module.exports.checkFeedsAndUpdate = async (moduleData) => {
     const guids = moduleData.ensure('guids', {})
     const names = moduleData.ensure('names', [])
     const setups = moduleData.get('setups')
@@ -59,16 +62,14 @@ module.exports.checkFeedsAndUpdate = async () => {
                                 "url": "https://brightspace.tudelft.nl/",
                                 "icon_url": "https://www.amsterdamuas.com/binaries/twocolumnlandscape/content/gallery/subsites/dlo/nieuwsberichten/logo-brightspace-b.png"
                             },
-                            "title": `${courseName}`,// ${itemData.title}`,
+                            "title": `${courseName}`, // ${itemData.title}`,
                             "url": itemData.link,
                             "description": desc,
                             "timestamp": itemData.isoDate,
-                            "fields": [
-                                {
-                                    "name": "Concerns",
-                                    "value": `<#${feedData.courseChannelId}> (<@&${feedData.studentRoleId}>)`
-                                }	
-                            ]
+                            "fields": [{
+                                "name": "Concerns",
+                                "value": `<#${feedData.courseChannelId}> (<@&${feedData.studentRoleId}>)`
+                            }]
                         }, webhookId, webhookToken)
                         guids[guildId].push(itemData.guid)
                     }
@@ -81,7 +82,9 @@ module.exports.checkFeedsAndUpdate = async () => {
 
 module.exports.sendAnnouncement = async (embed, webhookId, webhookToken) => {
     webhookClient = new WebhookClient(webhookId, webhookToken)
-    result = await webhookClient.send({embeds: [embed]})
+    result = await webhookClient.send({
+        embeds: [embed]
+    })
 }
 
 /*

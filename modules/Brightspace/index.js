@@ -159,7 +159,7 @@ exports.run = async (client, message, args, level) => {
             // }
 
             // await updateMemberCount(channelA, guild)
-            await checkFeedsAndUpdate()
+            await checkFeedsAndUpdate(moduleData)
             return replyMessage('reload successful.', message, client)
         case 'resetGuids':
             moduleData.set('guids', [], guildId)

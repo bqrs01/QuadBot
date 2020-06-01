@@ -1,5 +1,6 @@
 let {
-    mainInterval
+    mainInterval,
+    moduleData
 } = require('../index')
 
 const {
@@ -7,8 +8,8 @@ const {
 } = require('../helpers')
 
 module.exports = async (client, _) => {
-    checkFeedsAndUpdate()
+    checkFeedsAndUpdate(moduleData)
     mainInterval = setInterval(() => {
-        checkFeedsAndUpdate()
+        checkFeedsAndUpdate(moduleData)
     }, 300 * 1000);
 }
