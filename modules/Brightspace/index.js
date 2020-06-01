@@ -1,20 +1,22 @@
 const Enmap = require('enmap');
 const moduleData = new Enmap('quadbot.brightspace')
-const {MessageAttachment} = require('discord.js')
+const {
+    MessageAttachment
+} = require('discord.js')
 
-// const {
-//     updateMemberCount
-// } = require('./helpers')
+const {
+    checkFeedsAndUpdate
+} = require('./helpers')
 
 function truncateString(str, num) {
     // If the length of str is less than or equal to num
     // just return str--don't truncate it.
     if (str.length <= num) {
-      return str
+        return str
     }
     // Return str truncated with '...' concatenated to the end of str.
     return str.slice(0, num) + '...'
-  }
+}
 
 const replyMessage = (text, message, client, dis = true) => {
     if (!dis) return client.sendDisappearingMessage(`${message.member}, ${text}`, message.channel, 60)
@@ -74,7 +76,7 @@ exports.run = async (client, message, args, level) => {
             courseChannelId = arguments[1]
             studentRoleId = arguments[2]
             courseName = arguments.slice(3).join(" ")
-            
+
             if (!feedUrl || !courseChannelId || !studentRoleId || !courseName) return replyMessage('the argument(s) were missing!', message, client)
             if (!moduleData.has('setups', `${guildId}.${mChannelId}`)) return replyMessage('this channel is not setup!', message, client)
             setupBefore = (moduleData.ensure('setups', [], `${guildId}.${mChannelId}.feeds`).filter((a) => a.feedUrl == feedUrl)).length > 0
@@ -124,7 +126,7 @@ exports.run = async (client, message, args, level) => {
             moduleData.set('names', names)
 
             replyMessage('name successfully added.', message, client)
-            
+
             break
 
         case 'debug':
@@ -157,7 +159,7 @@ exports.run = async (client, message, args, level) => {
             // }
 
             // await updateMemberCount(channelA, guild)
-
+            await checkFeedsAndUpdate()
             return replyMessage('reload successful.', message, client)
         case 'resetGuids':
             moduleData.set('guids', [], guildId)
