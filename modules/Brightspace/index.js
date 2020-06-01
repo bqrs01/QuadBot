@@ -127,6 +127,7 @@ exports.run = async (client, message, args, level) => {
             break
 
         case 'debug':
+            console.log(truncateString(JSON.stringify(moduleData.get('setups')), 1997))
             replyMessage(`${truncateString(JSON.stringify(moduleData.get('setups')), 1997)}`, message, client, dis = false)
             replyMessage(`${truncateString(JSON.stringify(moduleData.get('guids')), 1997)}`, message, client, dis = false)
             return replyMessage(`${truncateString(JSON.stringify(moduleData.get('names')), 1997)}`, message, client, dis = false)
@@ -148,6 +149,9 @@ exports.run = async (client, message, args, level) => {
         case 'resetGuids':
             moduleData.set('guids', [], guildId)
             return replyMessage('reset successful.', message, client)
+        case 'tg':
+            moduleData.set('guids', {})
+            return replyMessage('tg done.', message, client)
     }
 }
 
