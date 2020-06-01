@@ -127,10 +127,10 @@ exports.run = async (client, message, args, level) => {
             break
 
         case 'debug':
-            console.log(truncateString(JSON.stringify(moduleData.get('setups')), 1997))
-            replyMessage(`${truncateString(JSON.stringify(moduleData.get('setups')), 1997)}`, message, client, dis = false)
-            replyMessage(`${truncateString(JSON.stringify(moduleData.get('guids')), 1997)}`, message, client, dis = false)
-            return replyMessage(`${truncateString(JSON.stringify(moduleData.get('names')), 1997)}`, message, client, dis = false)
+            console.log(truncateString(JSON.stringify(moduleData.get('setups')), 1985))
+            replyMessage(`${truncateString(JSON.stringify(moduleData.get('setups')), 1985)}`, message, client, dis = false)
+            replyMessage(`${truncateString(JSON.stringify(moduleData.get('guids')), 1985)}`, message, client, dis = false)
+            return replyMessage(`${truncateString(JSON.stringify(moduleData.get('names')), 1985)}`, message, client, dis = false)
         case 'reload':
             // const guildIdA = message.guild.id;
             // if (!moduleData.hasProp('setups', guildIdA)) return replyMessage('this server is not setup!', message, client)
