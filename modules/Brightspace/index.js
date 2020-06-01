@@ -1,5 +1,6 @@
 const Enmap = require('enmap');
 const moduleData = new Enmap('quadbot.brightspace')
+const {MessageAttachment} = require('discord.js')
 
 // const {
 //     updateMemberCount
@@ -127,10 +128,22 @@ exports.run = async (client, message, args, level) => {
             break
 
         case 'debug':
-            console.log(truncateString(JSON.stringify(moduleData.get('setups')), 1985))
-            replyMessage(`${truncateString(JSON.stringify(moduleData.get('setups')), 1985)}`, message, client, dis = false)
-            replyMessage(`${truncateString(JSON.stringify(moduleData.get('guids')), 1985)}`, message, client, dis = false)
-            return replyMessage(`${truncateString(JSON.stringify(moduleData.get('names')), 1985)}`, message, client, dis = false)
+            res1 = Buffer.from(JSON.stringify(moduleData.get('setups')))
+            res2 = Buffer.from(JSON.stringify(moduleData.get('guids')))
+            res3 = Buffer.from(JSON.stringify(moduleData.get('names')))
+
+            file1 = new MessageAttachment(res1, 'setups.json')
+            file2 = new MessageAttachment(res2, 'guids.json')
+            file3 = new MessageAttachment(res3, 'names.json')
+
+            return message.channel.send('Data: ', {
+                files: [
+                    file1,
+                    file2,
+                    file3
+                ]
+            })
+            //return replyMessage(`${truncateString(JSON.stringify(moduleData.get('names')), 1985)}`, message, client, dis = false)
         case 'reload':
             // const guildIdA = message.guild.id;
             // if (!moduleData.hasProp('setups', guildIdA)) return replyMessage('this server is not setup!', message, client)
