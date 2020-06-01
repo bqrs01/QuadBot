@@ -18,7 +18,7 @@ function truncateString(str, num) {
   
 
 module.exports.checkFeedsAndUpdate = async () => {
-    const guids = moduleData.ensure('guids', [])
+    const guids = moduleData.ensure('guids', {})
     const names = moduleData.ensure('names', [])
     const setups = moduleData.get('setups')
     for (let setup in setups) {
@@ -40,7 +40,10 @@ module.exports.checkFeedsAndUpdate = async () => {
                 let fetchedFeed = await parser.parseURL(feedUrl);
                 for (let item in fetchedFeed.items) {
                     itemData = fetchedFeed.items[item]
-                    if (!guids.includes(itemData.guid)) {
+                    if (!guids[guildId]) {
+                        guids[guildId] = []
+                    }
+                    if (!guids[guildId].includes(itemData.guid)) {
                         desc = `**${itemData.title}**\n${itemData.contentSnippet}`
                         for (var i = 0; i < names.length; i++) {
                             var searchMask = names[i];
@@ -67,7 +70,7 @@ module.exports.checkFeedsAndUpdate = async () => {
                                 }	
                             ]
                         }, webhookId, webhookToken)
-                        guids.push(itemData.guid)
+                        guids[guildId].push(itemData.guid)
                     }
                 }
             }

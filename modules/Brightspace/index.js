@@ -136,7 +136,7 @@ exports.run = async (client, message, args, level) => {
 
             return replyMessage('reload successful.', message, client)
         case 'resetGuids':
-            moduleData.set('guids', [])
+            moduleData.set('guids', [], guildId)
             return replyMessage('reset successful.', message, client)
     }
 }
