@@ -27,26 +27,7 @@ module.exports = async client => {
 
     client.logger.log('Connected as ' + client.user.tag, 'ready')
 
-    client.user.setActivity('AE Students', {
+    client.user.setActivity('Black Mirror', {
         type: 'WATCHING'
     })
-    /*
-    // AE Group 10E server ref
-    const server = await client.guilds.cache.get("688031444664188943")
-
-    // Get channel refs
-    const selectVoiceChannel = await client.channels.cache.get("710245938869829654")
-    const joinVoiceChannel = await client.channels.cache.get("710245966342783099")
-
-    // Delete previous message, if any
-    const oldMessages = await selectVoiceChannel.messages.fetch()
-    oldMessages.forEach((message) => {
-        message.delete()
-    })
-
-    const mainMessage = await selectVoiceChannel.send(mainMessageEmbed)
-    mainMessage.react('1️⃣')
-    mainMessage.react('2️⃣')
-    client.mainMessageId = mainMessage.id
-    */
 };
