@@ -68,7 +68,7 @@ module.exports.checkFeedsAndUpdate = async (moduleData) => {
                             "timestamp": itemData.isoDate,
                             "fields": [{
                                 "name": "Concerns",
-                                "value": `<#${feedData.courseChannelId}> (<@&${feedData.studentRoleId}>)`
+                                "value": `<#${feedData.courseChannelId}> (${feedData.studentRoleId == 'everyone' ? '@everyone' : `<@&${feedData.studentRoleId}>`})`
                             }]
                         }, webhookId, webhookToken)
                         guids[guildId].push(itemData.guid)
