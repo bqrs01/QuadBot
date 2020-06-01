@@ -5,6 +5,16 @@ const moduleData = new Enmap('quadbot.brightspace')
 //     updateMemberCount
 // } = require('./helpers')
 
+function truncateString(str, num) {
+    // If the length of str is less than or equal to num
+    // just return str--don't truncate it.
+    if (str.length <= num) {
+      return str
+    }
+    // Return str truncated with '...' concatenated to the end of str.
+    return str.slice(0, num) + '...'
+  }
+
 const replyMessage = (text, message, client, dis = true) => {
     if (!dis) return client.sendDisappearingMessage(`${message.member}, ${text}`, message.channel, 60)
     else {
@@ -117,9 +127,9 @@ exports.run = async (client, message, args, level) => {
             break
 
         case 'debug':
-            replyMessage(`${JSON.stringify(moduleData.get('setups'))}`, message, client, dis = false)
-            replyMessage(`${JSON.stringify(moduleData.get('guids'))}`, message, client, dis = false)
-            return replyMessage(`${JSON.stringify(moduleData.get('names'))}`, message, client, dis = false)
+            replyMessage(`${truncateString(JSON.stringify(moduleData.get('setups')), 1997)}`, message, client, dis = false)
+            replyMessage(`${truncateString(JSON.stringify(moduleData.get('guids')), 1997)}`, message, client, dis = false)
+            return replyMessage(`${truncateString(JSON.stringify(moduleData.get('names')), 1997)}`, message, client, dis = false)
         case 'reload':
             // const guildIdA = message.guild.id;
             // if (!moduleData.hasProp('setups', guildIdA)) return replyMessage('this server is not setup!', message, client)
