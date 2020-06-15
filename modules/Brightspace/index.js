@@ -1,5 +1,6 @@
 const Enmap = require('enmap');
 const moduleData = new Enmap('quadbot.brightspace')
+const request = require('request')
 const {
     MessageAttachment
 } = require('discord.js')
@@ -34,15 +35,16 @@ exports.run = async (client, message, args, level) => {
     switch (command) {
         case 'addSetup':
             const channelId = arguments[0]
-            const webhookId = arguments[1]
-            const webhookToken = arguments[2]
-            if (!channelId || !webhookId || !webhookToken) return replyMessage('the argument(s) were missing!', message, client)
+            // const webhookId = arguments[1]
+            // const webhookToken = arguments[2]
+            // if (!channelId || !webhookId || !webhookToken) return replyMessage('the argument(s) were missing!', message, client)
+            if (!channelId) return replyMessage('the channel id is missing!', message, client)
 
             let channel
             try {
                 channel = await client.channels.fetch(channelId)
             } catch (e) {
-                return replyMessage(`an error occured: ${e}`, message)
+                return replyMessage(`an error occured: ${e}`, message, client)
             }
 
             if (!moduleData.has('setups', guildId)) {
@@ -50,14 +52,19 @@ exports.run = async (client, message, args, level) => {
             }
 
             if (!moduleData.has('setups', `${guildId}.${channelId}`)) {
+                // moduleData.set('setups', {
+                //     webhookId,
+                //     webhookToken
+                // }, `${guildId}.${channelId}`)
+
+                // Use new system
                 moduleData.set('setups', {
-                    webhookId,
-                    webhookToken
+                    "migrated": true
                 }, `${guildId}.${channelId}`)
             } else {
-                moduleData.set('setups', webhookId, `${guildId}.${channelId}.webhookId`)
-                moduleData.set('setups', webhookToken, `${guildId}.${channelId}.webhookToken`)
-                return replyMessage('Updated webhook. Call \`reload\` to activate.', message, client)
+                // moduleData.set('setups', webhookId, `${guildId}.${channelId}.webhookId`)
+                // moduleData.set('setups', webhookToken, `${guildId}.${channelId}.webhookToken`)
+                return replyMessage('Nothing to update!', message, client)
             }
 
             replyMessage('setup successful. Call \`reload\` to activate.', message, client)
@@ -159,11 +166,63 @@ exports.run = async (client, message, args, level) => {
             // }
 
             // await updateMemberCount(channelA, guild)
-            await checkFeedsAndUpdate(moduleData)
+            await checkFeedsAndUpdate(moduleData, client)
             return replyMessage('reload successful.', message, client)
         case 'resetGuids':
             moduleData.set('guids', [], guildId)
             return replyMessage('reset successful.', message, client)
+        case 'migrateNow':
+            try {
+                channelE = await client.channels.fetch(mChannelId)
+            } catch (e) {
+                return replyMessage(`an error occured: ${e}`, message, client)
+            }
+
+            if (!moduleData.has('setups', guildId)) {
+                moduleData.set('setups', {}, guildId)
+            }
+
+            if (moduleData.has('setups', `${guildId}.${mChannelId}`)) {
+                // moduleData.set('setups', {
+                //     webhookId,
+                //     webhookToken
+                // }, `${guildId}.${channelId}`)
+                if (!moduleData.has('setups', `${guildId}.${mChannelId}.migrated`)) {
+                    // Migrate the setup
+                    moduleData.set('setups', true, `${guildId}.${mChannelId}.migrated`)
+                    return replyMessage('migrated successfully.', message, client)
+                } else {
+                    return replyMessage('channel already migrated!.', message, client)
+                }
+
+            } else {
+                // moduleData.set('setups', webhookId, `${guildId}.${channelId}.webhookId`)
+                // moduleData.set('setups', webhookToken, `${guildId}.${channelId}.webhookToken`)
+                return replyMessage('no setup found to migrate!', message, client)
+            }
+            break
+        case 'customSetup':
+            file = message.attachments.first()
+            if (file) {
+                fileUrl = file.url
+                request(fileUrl, async (err, response, body) => {
+                    if (!err && response.statusCode == 200) {
+                        try {
+                            var newSetup = JSON.parse(body);
+                            if (!moduleData.has('setups', guildId)) {
+                                moduleData.set('setups', {}, guildId)
+                            }
+                            await moduleData.set('setups', newSetup, guildId)
+                            return replyMessage('successfully added custom setup!', message, client)
+                        } catch(e) {
+                            return replyMessage(`error: ${e}`, message, client)
+                        }
+                    } else {
+                        return replyMessage(`error: ${err}.`, message, client)
+                    }
+                })
+            }
+            break
         case 'tg':
             moduleData.set('guids', {})
             return replyMessage('tg done.', message, client)

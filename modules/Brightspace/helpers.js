@@ -20,7 +20,7 @@ function truncateString(str, num) {
 }
 
 
-module.exports.checkFeedsAndUpdate = async (moduleData) => {
+module.exports.checkFeedsAndUpdate = async (moduleData, client) => {
     const guids = moduleData.ensure('guids', {})
     const names = moduleData.ensure('names', [])
     const setups = moduleData.get('setups')
@@ -32,8 +32,9 @@ module.exports.checkFeedsAndUpdate = async (moduleData) => {
             if (!setupData.hasOwnProperty(bc)) return;
             channelData = setupData[bc]
             channelId = bc
-            webhookId = channelData.webhookId
-            webhookToken = channelData.webhookToken
+            webhookId = channelData.webhookId || ""
+            webhookToken = channelData.webhookToken || ""
+            migrated = channelData.migrated || false
             //console.log(channelData)
             for (let feed in channelData.feeds) {
                 feedData = channelData.feeds[feed]
@@ -70,7 +71,7 @@ module.exports.checkFeedsAndUpdate = async (moduleData) => {
                                 "name": "Concerns",
                                 "value": `<#${feedData.courseChannelId}> (${feedData.studentRoleId == 'everyone' ? '@everyone' : `<@&${feedData.studentRoleId}>`})`
                             }]
-                        }, webhookId, webhookToken)
+                        }, webhookId, webhookToken, client, channelId, migrated)
                         guids[guildId].push(itemData.guid)
                     }
                 }
@@ -80,11 +81,24 @@ module.exports.checkFeedsAndUpdate = async (moduleData) => {
     moduleData.set("guids", guids)
 }
 
-module.exports.sendAnnouncement = async (embed, webhookId, webhookToken) => {
-    webhookClient = new WebhookClient(webhookId, webhookToken)
-    result = await webhookClient.send({
-        embeds: [embed]
-    })
+module.exports.sendAnnouncement = async (embed, webhookId, webhookToken, client, channelId, migrated) => {
+    if (!migrated) {
+        webhookClient = new WebhookClient(webhookId, webhookToken)
+        result = await webhookClient.send({
+            embeds: [embed]
+        })
+    } else {
+        // Migrated behaviour
+        try {
+            channel = await client.channels.fetch(channelId)
+            result = await channel.send({
+                embed: embed
+            })
+        } catch (e) {
+            console.log(e)
+        }
+
+    }
 }
 
 /*
