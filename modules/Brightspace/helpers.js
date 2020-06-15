@@ -40,7 +40,7 @@ module.exports.checkFeedsAndUpdate = async (moduleData, client) => {
                 feedData = channelData.feeds[feed]
                 feedUrl = feedData.feedUrl
                 courseName = feedData.courseName
-                //console.log(feedData)
+                //console.log(feedData)a
                 let fetchedFeed = await parser.parseURL(feedUrl);
                 for (let item in fetchedFeed.items) {
                     itemData = fetchedFeed.items[item]
@@ -57,6 +57,7 @@ module.exports.checkFeedsAndUpdate = async (moduleData, client) => {
                             desc = desc.replace(regEx, replaceMask);
                         }
                         desc = truncateString(desc, 2045)
+                        concernsMessage = `<#${feedData.courseChannelId}> (${feedData.studentRoleId == 'everyone' ? '@everyone' : `<@&${feedData.studentRoleId}>`})`
                         this.sendAnnouncement({
                             "author": {
                                 "name": "Brightspace",
@@ -66,12 +67,12 @@ module.exports.checkFeedsAndUpdate = async (moduleData, client) => {
                             "title": `${courseName}`, // ${itemData.title}`,
                             "url": itemData.link,
                             "description": desc,
-                            "timestamp": itemData.isoDate,
-                            "fields": [{
-                                "name": "Concerns",
-                                "value": `<#${feedData.courseChannelId}> (${feedData.studentRoleId == 'everyone' ? '@everyone' : `<@&${feedData.studentRoleId}>`})`
-                            }]
-                        }, webhookId, webhookToken, client, channelId, migrated)
+                            "timestamp": itemData.isoDate //,
+                            // "fields": [{
+                            //     "name": "Concerns",
+                            //     "value": concernsMessage
+                            // }]
+                        }, webhookId, webhookToken, client, channelId, concernsMessage, migrated)
                         guids[guildId].push(itemData.guid)
                     }
                 }
@@ -81,7 +82,7 @@ module.exports.checkFeedsAndUpdate = async (moduleData, client) => {
     moduleData.set("guids", guids)
 }
 
-module.exports.sendAnnouncement = async (embed, webhookId, webhookToken, client, channelId, migrated) => {
+module.exports.sendAnnouncement = async (embed, webhookId, webhookToken, client, channelId, concernsMessage, migrated) => {
     if (!migrated) {
         webhookClient = new WebhookClient(webhookId, webhookToken)
         result = await webhookClient.send({
@@ -91,7 +92,7 @@ module.exports.sendAnnouncement = async (embed, webhookId, webhookToken, client,
         // Migrated behaviour
         try {
             channel = await client.channels.fetch(channelId)
-            result = await channel.send({
+            result = await channel.send(`${concernsMessage}:`, {
                 embed: embed
             })
         } catch (e) {
