@@ -57,7 +57,7 @@ module.exports.checkFeedsAndUpdate = async (moduleData, client) => {
                             desc = desc.replace(regEx, replaceMask);
                         }
                         desc = truncateString(desc, 2045)
-                        concernsMessage = `<#${feedData.courseChannelId}> (${feedData.studentRoleId == 'everyone' ? '@everyone' : `<@&${feedData.studentRoleId}>`})`
+                        concernsMessage = `${courseName}: ${itemData.title}\n<#${feedData.courseChannelId}> (${feedData.studentRoleId == 'everyone' ? '@everyone' : `<@&${feedData.studentRoleId}>`})`
                         this.sendAnnouncement({
                             "author": {
                                 "name": "Brightspace",
