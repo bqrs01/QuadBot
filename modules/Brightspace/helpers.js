@@ -58,7 +58,8 @@ module.exports.checkFeedsAndUpdate = async (moduleData, client) => {
                         }
                         desc = truncateString(desc, 2045)
                         const courseCode = courseName.split(' ')[0]
-                        concernsMessage = `${courseCode}: ${itemData.title}\n<#${feedData.courseChannelId}> (${feedData.studentRoleId == 'everyone' ? '@everyone' : `<@&${feedData.studentRoleId}>`})`
+                        concernsMessage = `${courseCode}: ${itemData.title}\n(${feedData.studentRoleId == 'everyone' ? '@everyone' : `<@&${feedData.studentRoleId}>`})`
+                        concernsChannel = `<#${feedData.courseChannelId}>`
                         this.sendAnnouncement({
                             "author": {
                                 "name": "Brightspace",
@@ -73,7 +74,7 @@ module.exports.checkFeedsAndUpdate = async (moduleData, client) => {
                             //     "name": "Concerns",
                             //     "value": concernsMessage
                             // }]
-                        }, webhookId, webhookToken, client, channelId, concernsMessage, migrated)
+                        }, webhookId, webhookToken, client, channelId, concernsMessage, concernsChannel, migrated)
                         guids[guildId].push(itemData.guid)
                     }
                 }
@@ -83,7 +84,7 @@ module.exports.checkFeedsAndUpdate = async (moduleData, client) => {
     moduleData.set("guids", guids)
 }
 
-module.exports.sendAnnouncement = async (embed, webhookId, webhookToken, client, channelId, concernsMessage, migrated) => {
+module.exports.sendAnnouncement = async (embed, webhookId, webhookToken, client, channelId, concernsMessage, concernsChannel, migrated) => {
     if (!migrated) {
         webhookClient = new WebhookClient(webhookId, webhookToken)
         result = await webhookClient.send({
@@ -92,8 +93,12 @@ module.exports.sendAnnouncement = async (embed, webhookId, webhookToken, client,
     } else {
         // Migrated behaviour
         try {
+            embed['fields'] = [{
+                "name": "Concerns",
+                "value": concernsChannel
+            }]
             channel = await client.channels.fetch(channelId)
-            result = await channel.send(`${concernsMessage}:`, {
+            result = await channel.send(`${concernsMessage}`, {
                 embed: embed
             })
         } catch (e) {
