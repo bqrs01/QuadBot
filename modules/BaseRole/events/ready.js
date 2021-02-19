@@ -11,12 +11,12 @@ module.exports = async(client, _) => {
         
             constructor(client, data, guild) {
                 super(client, data, guild);
-                this.pending = data.pending ?? false;
+                this.pending = data.pending || false;
             }
         
             _patch(data) {
                 super._patch(data);
-                this.pending = data.pending ?? false;
+                this.pending = data.pending || false;
             }
         }
         return GuildMemberWithPending;
