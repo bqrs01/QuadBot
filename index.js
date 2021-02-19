@@ -12,6 +12,24 @@ const {
 const readdir = promisify(require("fs").readdir);
 const Enmap = require("enmap");
 
+// Used to enable 'pending' flag for Member Screening on Discord.js v12.
+Discord.Structures.extend('GuildMember', GuildMember => {
+  class GuildMemberWithPending extends GuildMember {
+      pending = false;
+  
+      constructor(client, data, guild) {
+          super(client, data, guild);
+          this.pending = data.pending || false;
+      }
+  
+      _patch(data) {
+          super._patch(data);
+          this.pending = data.pending || false;
+      }
+  }
+  return GuildMemberWithPending;
+});
+
 // Discord client
 const client = new Discord.Client();
 
