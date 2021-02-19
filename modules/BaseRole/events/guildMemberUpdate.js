@@ -3,6 +3,7 @@ let {
 } = require('../index')
 
 module.exports = async(client, oldMember, newMember) => {
+    console.log(oldMember, newMember, oldMember.pending, newMember.pending)
     // Check if pending has changed
     if (oldMember.pending && !newMember.pending) {
         // Get guildId to check if guild is setup
