@@ -2,8 +2,7 @@ let {
     moduleData
 } = require('../index')
 
-module.exports = async(client, oldMember, newMember) => {
-    console.log(oldMember, newMember)
+module.exports = async(client, _, oldMember, newMember) => {
     // Check if pending has changed
     if (oldMember.pending && !newMember.pending) {
         // Get guildId to check if guild is setup
