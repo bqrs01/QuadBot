@@ -135,6 +135,32 @@ exports.run = async (client, message, args, level) => {
             replyMessage('name successfully added.', message, client)
 
             break
+    
+        case 'divert':
+            const diverted = moduleData.ensure('diverted', false)
+            if (arguments[0] == "yes") {
+                moduleData.set('diverted', true)
+                return replyMessage('diverting messages!', message, client)
+            } else if (arguments[0] == "no"){
+                moduleData.set('diverted', false)
+                return replyMessage('turning off divertion!', message, client)
+            } else {
+                return replyMessage('don\'t know what you want...', message, client)
+            }
+            break
+        
+        case 'allowmentions':
+            const allowmentions = moduleData.ensure('allowmentions', true)
+            if (arguments[0] == "yes") {
+                moduleData.set('allowmentions', true)
+                return replyMessage('allowing mentions!', message, client)
+            } else if (arguments[0] == "no"){
+                moduleData.set('allowmentions', false)
+                return replyMessage('blocking mentions!', message, client)
+            } else {
+                return replyMessage('don\'t know what you want...', message, client)
+            }
+            break
 
         case 'debug':
             res1 = Buffer.from(JSON.stringify(moduleData.get('setups')))
