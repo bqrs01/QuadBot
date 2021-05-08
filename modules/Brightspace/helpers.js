@@ -23,6 +23,7 @@ function truncateString(str, num) {
 module.exports.checkFeedsAndUpdate = async (moduleData, client) => {
     const guids = moduleData.ensure('guids', {})
     const names = moduleData.ensure('names', [])
+    const diverted = moduleData.ensure('diverted', true)
     const allowmentions = moduleData.ensure('allowmentions', false)
     const setups = moduleData.get('setups')
     for (let setup in setups) {
@@ -82,7 +83,7 @@ module.exports.checkFeedsAndUpdate = async (moduleData, client) => {
                             //     "name": "Concerns",
                             //     "value": concernsMessage
                             // }]
-                        }, webhookId, webhookToken, client, channelId, concernsMessage, concernsChannel, migrated)
+                        }, webhookId, webhookToken, client, channelId, concernsMessage, concernsChannel, migrated, diverted)
                         guids[guildId].push(itemId)
                     }
                 }
@@ -92,8 +93,7 @@ module.exports.checkFeedsAndUpdate = async (moduleData, client) => {
     moduleData.set("guids", guids)
 }
 
-module.exports.sendAnnouncement = async (embed, webhookId, webhookToken, client, channelId, concernsMessage, concernsChannel, migrated) => {
-    const diverted = moduleData.ensure('diverted', true)
+module.exports.sendAnnouncement = async (embed, webhookId, webhookToken, client, channelId, concernsMessage, concernsChannel, migrated, diverted) => {
     if (!migrated) {
         webhookClient = new WebhookClient(webhookId, webhookToken)
         result = await webhookClient.send({
