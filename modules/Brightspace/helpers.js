@@ -23,6 +23,7 @@ function truncateString(str, num) {
 module.exports.checkFeedsAndUpdate = async (moduleData, client) => {
     const guids = moduleData.ensure('guids', {})
     const names = moduleData.ensure('names', [])
+    const allowmentions = moduleData.ensure('allowmentions', false)
     const setups = moduleData.get('setups')
     for (let setup in setups) {
         if (!setups.hasOwnProperty(setup)) return;
@@ -44,10 +45,11 @@ module.exports.checkFeedsAndUpdate = async (moduleData, client) => {
                 let fetchedFeed = await parser.parseURL(feedUrl);
                 for (let item in fetchedFeed.items) {
                     itemData = fetchedFeed.items[item]
+                    itemId = itemData.guid || itemData.id
                     if (!guids[guildId]) {
                         guids[guildId] = []
                     }
-                    if (!guids[guildId].includes(itemData.guid)) {
+                    if (!guids[guildId].includes(itemId)) {
                         desc = `**${itemData.title}**\n${itemData.contentSnippet}`
                         for (var i = 0; i < names.length; i++) {
                             var searchMask = names[i];
@@ -58,7 +60,13 @@ module.exports.checkFeedsAndUpdate = async (moduleData, client) => {
                         }
                         desc = truncateString(desc, 2045)
                         const courseCode = courseName.split(' ')[0]
-                        concernsMessage = `${courseCode}: ${itemData.title}\n(${feedData.studentRoleId == 'everyone' ? '@everyone' : `<@&${feedData.studentRoleId}>`})`
+                        concernsMessage = ''
+                        if (allowmentions) {
+                            concernsMessage = `${courseCode}: ${itemData.title}\n(${feedData.studentRoleId == 'everyone' ? '@everyone' : `<@&${feedData.studentRoleId}>`})`
+                        }
+                        else {
+                            concernsMessage = `${courseCode}: ${itemData.title}`
+                        }
                         concernsChannel = `<#${feedData.courseChannelId}>`
                         this.sendAnnouncement({
                             "author": {
@@ -75,7 +83,7 @@ module.exports.checkFeedsAndUpdate = async (moduleData, client) => {
                             //     "value": concernsMessage
                             // }]
                         }, webhookId, webhookToken, client, channelId, concernsMessage, concernsChannel, migrated)
-                        guids[guildId].push(itemData.guid)
+                        guids[guildId].push(itemId)
                     }
                 }
             }
@@ -85,6 +93,7 @@ module.exports.checkFeedsAndUpdate = async (moduleData, client) => {
 }
 
 module.exports.sendAnnouncement = async (embed, webhookId, webhookToken, client, channelId, concernsMessage, concernsChannel, migrated) => {
+    const diverted = moduleData.ensure('diverted', true)
     if (!migrated) {
         webhookClient = new WebhookClient(webhookId, webhookToken)
         result = await webhookClient.send({
@@ -97,7 +106,11 @@ module.exports.sendAnnouncement = async (embed, webhookId, webhookToken, client,
                 "name": "Concerns",
                 "value": concernsChannel
             }]
-            channel = await client.channels.fetch(channelId)
+            if (diverted) {
+                channel = await client.channels.fetch("840521550553415690")
+            } else {
+                channel = await client.channels.fetch(channelId)
+            }
             result = await channel.send(`${concernsMessage}`, {
                 embed: embed
             })
