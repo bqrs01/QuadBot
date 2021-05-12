@@ -59,6 +59,25 @@ exports.run = async (client, message, args, level) => {
             await updateMemberCount(channelA, guild)
 
             return replyMessage('reload successful.', message, client)
+        case 'reloadOther':
+            const guildIdC = arguments[0];
+            if (!guildIdC) {
+                return replyMessage("Sorry, no guild ID mentioned!")
+            }
+
+            if (!moduleData.hasProp('setups', guildIdC)) return replyMessage('this other server is not setup!', message, client)
+            const channelIdA = moduleData.get('setups', `${guildIdC}.channelId`)
+            let guild, channelC
+            try {
+                guild = await client.guilds.cache.get(guildIdC)
+                channelC = await client.channels.fetch(channelIdC)
+            } catch (e) {
+                return replyMessage(`an error occured: ${e}`, message, client)
+            }
+
+            await updateMemberCount(channelC, guild)
+
+            return replyMessage('reload successful.', message, client)
     }
 }
 
