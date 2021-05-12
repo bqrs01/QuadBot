@@ -66,7 +66,7 @@ exports.run = async (client, message, args, level) => {
             }
 
             if (!moduleData.hasProp('setups', guildIdC)) return replyMessage('this other server is not setup!', message, client)
-            const channelIdA = moduleData.get('setups', `${guildIdC}.channelId`)
+            const channelIdC = moduleData.get('setups', `${guildIdC}.channelId`)
             let guild, channelC
             try {
                 guild = await client.guilds.cache.get(guildIdC)
