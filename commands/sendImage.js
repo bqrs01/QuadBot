@@ -15,7 +15,7 @@ exports.run = async (client, message, args, level) => {
         fileUrl = file.url
         try {
             let channel = await client.channels.fetch(channelId)
-            let pinnedMessage = await channel.send(body, {files: [file.url]})
+            let pinnedMessage = await channel.send('', {files: [file.url]})
             if (pin == 'yes') {
                 await pinnedMessage.pin()
             }
