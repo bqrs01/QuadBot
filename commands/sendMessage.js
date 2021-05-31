@@ -10,6 +10,7 @@ const replyMessage = (text, message, client, dis = true) => {
 exports.run = async (client, message, args, level) => {
     file = message.attachments.first()
     channelId = args[0] || message.channel.id
+    pin = args[1] || 'no'
     if (file) {
         fileUrl = file.url
         request(fileUrl, async (err, response, body) => {
@@ -17,7 +18,9 @@ exports.run = async (client, message, args, level) => {
                 try {
                     let channel = await client.channels.fetch(channelId)
                     let pinnedMessage = await channel.send(body)
-                    await pinnedMessage.pin()
+                    if (pin == 'yes') {
+                        await pinnedMessage.pin()
+                    }
                     return replyMessage('successfully sent message!', message, client)
                 } catch (e) {
                     return replyMessage(`error: ${e}`, message, client)
