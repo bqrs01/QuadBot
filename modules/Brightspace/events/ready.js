@@ -8,7 +8,7 @@ const {
 } = require('../helpers')
 
 module.exports = async (client, _) => {
-    checkFeedsAndUpdate(moduleData, client)
+    //checkFeedsAndUpdate(moduleData, client)
     mainInterval = setInterval(() => {
         checkFeedsAndUpdate(moduleData, client)
     }, 300 * 1000);
