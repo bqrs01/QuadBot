@@ -10,12 +10,23 @@ const replyMessage = (text, message, client, dis = true) => {
 exports.run = async (client, message, args, level) => {
     file = message.attachments.first()
     channelId = args[0] || message.channel.id
+    pin = args[1] || 'no'
     if (file) {
         fileUrl = file.url
-        request(fileUrl, async (err, response, body) => {
+        try {
+            let channel = await client.channels.fetch(channelId)
+            let pinnedMessage = await channel.send(body, {files: [file.url]})
+            if (pin == 'yes') {
+                await pinnedMessage.pin()
+            }
+            return replyMessage('successfully sent image!', message, client)
+        } catch (e) {
+            return replyMessage(`error: ${e}`, message, client)
+        }
+        /*request(fileUrl, async (err, response, body) => {
             if (!err && response.statusCode == 200) {
                 try {
-                    let channel = await client.channels.fetch(channelId)
+                    let channel = await message.channel
                     let pinnedMessage = await channel.send(body)
                     await pinnedMessage.pin()
                     return replyMessage('successfully sent message!', message, client)
@@ -25,19 +36,19 @@ exports.run = async (client, message, args, level) => {
             } else {
                 return replyMessage(`error: ${err}.`, message, client)
             }
-        })
+        })*/
     }
 }
 
 exports.conf = {
     enabled: true,
-    aliases: ['sm'],
+    aliases: ['si'],
     permLevel: "5"
 };
 
 exports.help = {
-    name: "send_message",
+    name: "send_image",
     category: "Chat",
     description: "",
-    usage: "send_message"
+    usage: "send_image"
 };
