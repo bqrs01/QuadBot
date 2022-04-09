@@ -21,7 +21,7 @@
     "chalk": "^4.0.0",
     "discord.js": "^12.5.0",
     "enmap": "^5.2.4",
-    "moment": "^2.25.3",
+    "moment": "^2.29.2",
     "request": "^2.88.2",
     "rss-parser": "^3.8.0"
   }
